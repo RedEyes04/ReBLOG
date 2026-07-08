@@ -1,0 +1,41 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Inter', 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+  --color-apple-blue: #0071E3;
+  --color-apple-blue-hover: #0077ED;
+  --color-apple-gray-50: #F5F5F7;
+  --color-apple-gray-100: #E8E8ED;
+  --color-apple-gray-200: #D2D2D7;
+  --color-apple-gray-300: #AEAEB2;
+  --color-apple-gray-400: #8E8E93;
+  --color-apple-gray-500: #6E6E73;
+  --color-apple-gray-600: #1D1D1F;
+  --color-apple-gray-700: #161617;
+}
+
+@layer base {
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply font-sans text-apple-gray-600 bg-white;
+    letter-spacing: -0.01em;
+  }
+
+  ::selection {
+    @apply bg-apple-blue/20;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .glass {
+    @apply bg-white/80 backdrop-blur-xl backdrop-saturate-150;
+  }
+}
