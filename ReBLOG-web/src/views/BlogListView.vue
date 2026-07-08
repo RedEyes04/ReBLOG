@@ -10,7 +10,7 @@ import Pagination from '@/components/Pagination.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import EmptyState from '@/components/EmptyState.vue'
 import ScrollReveal from '@/components/ScrollReveal.vue'
-import { Search, X } from 'lucide-vue-next'
+import { Search, X, PenLine } from 'lucide-vue-next'
 import { getList } from '@/utils/helpers'
 
 const route = useRoute()
@@ -19,8 +19,7 @@ const subsets = ref<SubsetData[]>([])
 const labels = ref<LabelData[]>([])
 const totalCount = ref(0)
 const loading = ref(true)
-const currentPage = ref(1)
-const pageSize = 8
+const currentPage = ref(1); const pageSize = 8
 const selectedSubset = ref<number | undefined>(-1)
 const selectedLabel = ref<string | undefined>()
 const searchTerm = ref('')
@@ -34,22 +33,16 @@ async function fetchArticles() {
   } catch { /* */ }
   loading.value = false
 }
-
 onMounted(async () => {
-  try {
-    const [sRes, lRes] = await Promise.all([getSubsets(0), getLabels()])
-    if (sRes.code === 200 && sRes.data) subsets.value = getList<SubsetData>(sRes.data)
-    if (lRes.code === 200) labels.value = lRes.data || []
-  } catch { /* */ }
+  try { const [s, l] = await Promise.all([getSubsets(0), getLabels()]); if (s.code===200&&s.data) subsets.value = getList<SubsetData>(s.data); if (l.code===200) labels.value = l.data||[] } catch { /* */ }
   if (route.query.q) searchTerm.value = String(route.query.q)
   await fetchArticles()
 })
-
-function onSubsetChange(id: number | undefined) { selectedSubset.value = id; selectedLabel.value = undefined; currentPage.value = 1; fetchArticles() }
-function onLabelSelect(label: string | undefined) { selectedLabel.value = label; selectedSubset.value = undefined; currentPage.value = 1; fetchArticles() }
-function onSearch() { currentPage.value = 1; fetchArticles() }
-function clearSearch() { searchTerm.value = ''; currentPage.value = 1; fetchArticles() }
-function onPageChange(p: number) { currentPage.value = p; window.scrollTo({ top: 0, behavior: 'smooth' }); fetchArticles() }
+function onSubsetChange(id: number | undefined) { selectedSubset.value=id; selectedLabel.value=undefined; currentPage.value=1; fetchArticles() }
+function onLabelSelect(label: string | undefined) { selectedLabel.value=label; selectedSubset.value=undefined; currentPage.value=1; fetchArticles() }
+function onSearch() { currentPage.value=1; fetchArticles() }
+function clearSearch() { searchTerm.value=''; currentPage.value=1; fetchArticles() }
+function onPageChange(p: number) { currentPage.value=p; window.scrollTo({top:0,behavior:'smooth'}); fetchArticles() }
 </script>
 
 <template>
@@ -57,9 +50,15 @@ function onPageChange(p: number) { currentPage.value = p; window.scrollTo({ top:
     <div class="pt-16 sm:pt-24 pb-16 max-w-4xl mx-auto px-6">
       <ScrollReveal>
         <div class="mb-10">
-          <p class="text-xs font-bold text-accent uppercase tracking-widest mb-2">Blog</p>
+          <div class="flex items-center gap-2 mb-2">
+            <span class="section-dot" />
+            <span class="text-[11px] font-bold text-accent uppercase tracking-widest">Blog</span>
+          </div>
           <h1 class="text-3xl sm:text-4xl font-extrabold text-zinc-800">博客</h1>
-          <p class="mt-1.5 text-zinc-400 text-sm" v-if="totalCount >= 0">共 {{ totalCount }} 篇文章</p>
+          <div class="flex items-center gap-2 mt-1.5">
+            <PenLine :size="13" class="text-zinc-400" />
+            <p class="text-zinc-400 text-sm" v-if="totalCount >= 0">共 {{ totalCount }} 篇文章</p>
+          </div>
         </div>
       </ScrollReveal>
 
