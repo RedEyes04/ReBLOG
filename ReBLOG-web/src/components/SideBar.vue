@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import { Home, FileText, Image, BookOpen, User, Github } from 'lucide-vue-next'
+import { Home, FileText, Image, BookOpen, Github } from 'lucide-vue-next'
 
 const route = useRoute()
 const navLinks = [
@@ -20,12 +20,6 @@ function isActive(path: string) {
   <!-- Desktop: left floating sidebar -->
   <aside class="fixed left-4 top-[50%] z-50 hidden lg:block" style="transform:translateY(-50%)">
     <nav class="flex flex-col items-center gap-1 p-2 rounded-3xl glass-heavy">
-      <router-link to="/" class="p-2 mb-2">
-        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-accent to-accent-2 flex items-center justify-center shadow-lg shadow-accent/20 transition-all duration-300 hover:shadow-xl hover:shadow-accent/30 hover:scale-105">
-          <User :size="22" class="text-white" />
-        </div>
-      </router-link>
-
       <router-link
         v-for="link in navLinks" :key="link.path" :to="link.path"
         class="relative flex flex-col items-center gap-1 p-3 rounded-2xl transition-all duration-300 group"

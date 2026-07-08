@@ -99,7 +99,7 @@ exports.getArticlePage = (pageSize, nowPage, state, subsetId, serchTerm, classif
   } else if (typeof subsetId == 'string') {
     _sql = `select * from article where subset_id is null and classify="${classify}" or subset_id not in (${subsetId}) and classify="${classify}" order by id desc limit ${(nowPage - 1) * pageSize},${pageSize};`
   } else if (state > -1) {
-    _sql = `select * from article where state="${state}" and classify=0  order by id desc limit ${(nowPage - 1) * pageSize},${pageSize};`
+    _sql = `select * from article where state="${state}" and classify="${classify}" order by id desc limit ${(nowPage - 1) * pageSize},${pageSize};`
   } else {
     _sql = `select * from article where classify="${classify}" order by id desc limit ${(nowPage - 1) * pageSize},${pageSize};`
   }
@@ -116,7 +116,7 @@ exports.articleCount = (state, subsetId, serchTerm, classify) => {
   } else if (typeof subsetId == 'string') {
     _sql = `select count(*) as count from article where subset_id is null and classify="${classify}" or subset_id not in ("${subsetId}") and classify="${classify}";`
   } else if (state > -1) {
-    _sql = `select count(*) as count from article where state="${state}" and classify=0;`
+    _sql = `select count(*) as count from article where state="${state}" and classify="${classify}";`
   } else {
     _sql = `select count(*) as count from article where classify="${classify}";`
   }
