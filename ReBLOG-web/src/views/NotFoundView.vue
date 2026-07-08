@@ -2,18 +2,12 @@
 import { useRouter } from 'vue-router'
 const router = useRouter()
 </script>
-
 <template>
-  <div class="pt-14">
-    <div class="max-w-6xl mx-auto px-6 py-24 text-center">
-      <p class="text-8xl font-extrabold text-apple-gray-200 mb-4">404</p>
-      <p class="text-xl text-apple-gray-400 mb-8">页面不存在</p>
-      <button
-        @click="router.push('/')"
-        class="px-6 py-2.5 rounded-full bg-apple-blue text-white text-sm font-medium hover:bg-apple-blue-hover transition-colors"
-      >
-        返回首页
-      </button>
+  <div class="min-h-screen flex items-center justify-center px-6">
+    <div class="text-center">
+      <p class="text-8xl sm:text-9xl font-extrabold font-display bg-clip-text text-transparent bg-gradient-to-r from-accent via-accent-2 to-accent-3 mb-6">404</p>
+      <p class="text-lg text-zinc-500 mb-8">页面不存在，也许它从未存在过</p>
+      <button @click="router.push('/')" class="px-6 py-3 rounded-2xl bg-zinc-800 text-white text-sm font-semibold hover:bg-zinc-900 transition-all duration-300 hover:shadow-xl hover:shadow-zinc-800/15 hover:-translate-y-0.5">返回首页</button>
     </div>
   </div>
 </template>
