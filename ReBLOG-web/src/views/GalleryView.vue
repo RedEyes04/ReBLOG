@@ -7,6 +7,7 @@ import CategoryFilter from '@/components/CategoryFilter.vue'
 import Pagination from '@/components/Pagination.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import EmptyState from '@/components/EmptyState.vue'
+import { getList } from '@/utils/helpers'
 
 const items = ref<ArticleDate[]>([])
 const subsets = ref<SubsetData[]>([])
@@ -23,7 +24,7 @@ async function fetchItems() {
   try {
     const res = await getGallery({ pageSize, nowPage: currentPage.value, subsetId: selectedSubset.value })
     if (res.code === 200 && res.data) {
-      items.value = res.data.list || []
+      items.value = getList<ArticleDate>(res.data)
       totalCount.value = res.data.count
     }
   } catch { /* ignore */ }
@@ -33,7 +34,7 @@ async function fetchItems() {
 onMounted(async () => {
   try {
     const sRes = await getSubsets(1)
-    if (sRes.code === 200 && sRes.data) subsets.value = sRes.data.list || []
+    if (sRes.code === 200 && sRes.data) subsets.value = getList<SubsetData>(sRes.data)
   } catch { /* ignore */ }
   await fetchItems()
 })

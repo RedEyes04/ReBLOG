@@ -10,6 +10,7 @@ import Pagination from '@/components/Pagination.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import EmptyState from '@/components/EmptyState.vue'
 import { Search } from 'lucide-vue-next'
+import { getList } from '@/utils/helpers'
 
 const route = useRoute()
 const router = useRouter()
@@ -39,7 +40,7 @@ async function fetchArticles() {
       serchTerm: searchTerm.value || undefined,
     })
     if (res.code === 200 && res.data) {
-      articles.value = res.data.list || []
+      articles.value = getList<ArticleDate>(res.data)
       totalCount.value = res.data.count
     }
   } catch { /* ignore */ }
@@ -49,7 +50,7 @@ async function fetchArticles() {
 onMounted(async () => {
   try {
     const [sRes, lRes] = await Promise.all([getSubsets(0), getLabels()])
-    if (sRes.code === 200 && sRes.data) subsets.value = sRes.data.list || []
+    if (sRes.code === 200 && sRes.data) subsets.value = getList<SubsetData>(sRes.data)
     if (lRes.code === 200) labels.value = lRes.data || []
   } catch { /* ignore */ }
   // Restore filters from query

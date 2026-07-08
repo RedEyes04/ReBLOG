@@ -7,6 +7,7 @@ import Pagination from '@/components/Pagination.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import EmptyState from '@/components/EmptyState.vue'
 import { Search } from 'lucide-vue-next'
+import { getList } from '@/utils/helpers'
 
 const diaries = ref<DiaryDate[]>([])
 const totalCount = ref(0)
@@ -24,7 +25,7 @@ async function fetchDiaries() {
       serchTerm: searchTerm.value || undefined,
     })
     if (res.code === 200 && res.data) {
-      diaries.value = res.data.list || []
+      diaries.value = getList<DiaryDate>(res.data)
       totalCount.value = res.data.count
     }
   } catch { /* ignore */ }

@@ -9,7 +9,7 @@ export const getArticles = (params: {
   serchTerm?: string
   label?: string
 }) =>
-  client.post<any, ApiResponse<PaginatedData<ArticleDate>>>('/public/articles', params)
+  client.post<any, ApiResponse<PaginatedData<ArticleDate>>>('/public/articles', { ...params, count: true })
 
 /** 获取单篇文章详情 */
 export const getArticle = (id: number) =>
@@ -21,7 +21,7 @@ export const getGallery = (params: {
   nowPage: number
   subsetId?: number
 }) =>
-  client.post<any, ApiResponse<PaginatedData<ArticleDate>>>('/public/gallery', params)
+  client.post<any, ApiResponse<PaginatedData<ArticleDate>>>('/public/gallery', { ...params, count: true })
 
 /** 获取日记列表 */
 export const getDiaries = (params: {
@@ -29,7 +29,7 @@ export const getDiaries = (params: {
   nowPage: number
   serchTerm?: string
 }) =>
-  client.post<any, ApiResponse<PaginatedData<DiaryDate>>>('/public/diary', params)
+  client.post<any, ApiResponse<PaginatedData<DiaryDate>>>('/public/diary', { ...params, count: true })
 
 /** 获取文章评论 */
 export const getComments = (params: {

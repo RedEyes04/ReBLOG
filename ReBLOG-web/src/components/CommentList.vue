@@ -3,6 +3,7 @@ import type { ReplyData } from '@/types'
 import { MessageCircle, User } from 'lucide-vue-next'
 import { ref, onMounted } from 'vue'
 import { getComments, postComment } from '@/api'
+import { getList } from '@/utils/helpers'
 
 const props = defineProps<{
   articleId: number
@@ -18,7 +19,7 @@ async function fetchComments() {
   try {
     const res = await getComments({ articleId: props.articleId, pageSize: 50, nowPage: 1 })
     if (res.code === 200 && res.data) {
-      comments.value = res.data.list || []
+      comments.value = getList<ReplyData>(res.data)
     }
   } catch { /* ignore */ }
   loading.value = false

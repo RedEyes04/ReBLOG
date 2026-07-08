@@ -6,6 +6,7 @@ import ArticleCard from '@/components/ArticleCard.vue'
 import GalleryCard from '@/components/GalleryCard.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import { ArrowRight } from 'lucide-vue-next'
+import { getList } from '@/utils/helpers'
 
 const featuredArticles = ref<ArticleDate[]>([])
 const featuredGallery = ref<ArticleDate[]>([])
@@ -23,10 +24,10 @@ onMounted(async () => {
       getOverview(),
       getSubsets(0),
     ])
-    if (aRes.code === 200 && aRes.data) featuredArticles.value = aRes.data.list || []
-    if (gRes.code === 200 && gRes.data) featuredGallery.value = gRes.data.list || []
+    if (aRes.code === 200 && aRes.data) featuredArticles.value = getList<ArticleDate>(aRes.data)
+    if (gRes.code === 200 && gRes.data) featuredGallery.value = getList<ArticleDate>(gRes.data)
     if (oRes.code === 200) overview.value = oRes.data || null
-    if (sRes.code === 200 && sRes.data) articleSubsets.value = sRes.data.list || []
+    if (sRes.code === 200 && sRes.data) articleSubsets.value = getList<SubsetData>(sRes.data)
   } catch { /* API unavailable — show empty state */ }
   loading.value = false
 })
