@@ -67,10 +67,11 @@ exports.signin = async (req, res) => {
 exports.getComment = async (req, res) => {
   let data = req.body;
   let count = -1;
+  let articleId = data.articleId || -1;
 
-  await dbModel.getCommentPage(data.pageSize, data.nowPage).then(async (result) => {
+  await dbModel.getCommentPage(data.pageSize, data.nowPage, articleId).then(async (result) => {
     if (data.count) {
-      let c = await dbModel.commentCount(-1);
+      let c = await dbModel.commentCount(articleId);
       count = c[0].count;
     }
     if (result.length > 0) {

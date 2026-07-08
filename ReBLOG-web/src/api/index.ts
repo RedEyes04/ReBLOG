@@ -13,7 +13,7 @@ export const getArticles = (params: {
 
 /** 获取单篇文章详情 */
 export const getArticle = (id: number) =>
-  client.post<any, ApiResponse<ArticleDate>>('/public/article', { id })
+  client.post<any, ApiResponse<ArticleDate>>('/public/article', { articleId: id })
 
 /** 获取图库列表 */
 export const getGallery = (params: {

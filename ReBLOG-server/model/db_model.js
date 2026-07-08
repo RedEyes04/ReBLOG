@@ -19,8 +19,13 @@ exports.signin = (name) => {
 }
 
 //获取评论
-exports.getCommentPage = (pageSize, nowPage) => {
-  let _sql = `select * from comment order by id desc limit ${(nowPage - 1) * pageSize},${pageSize};`
+exports.getCommentPage = (pageSize, nowPage, articleId) => {
+  let _sql
+  if (articleId && articleId > 0) {
+    _sql = `select * from comment where article_id="${articleId}" order by id desc limit ${(nowPage - 1) * pageSize},${pageSize};`
+  } else {
+    _sql = `select * from comment order by id desc limit ${(nowPage - 1) * pageSize},${pageSize};`
+  }
   return db.query2(_sql)
 }
 //删除评论deleteComment
