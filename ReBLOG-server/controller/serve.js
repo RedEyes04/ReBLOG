@@ -535,6 +535,35 @@ exports.overview = async (req, res) => {
   })
 }
 
+//提交评论
+exports.addComment = async (req, res) => {
+  let data = {
+    user_id: req.body.userId,
+    user_name: req.body.userName,
+    article_id: req.body.articleId,
+    content: req.body.content,
+    moment: new Date(),
+    isread: 0
+  }
+  await dbModel.addComment(data).then(() => {
+    res.send({ code: 200 })
+  })
+}
 
-
-
+//点赞文章
+exports.addPraise = async (req, res) => {
+  let data = {
+    user_id: req.body.userId,
+    article_id: req.body.articleId,
+    moment: new Date()
+  }
+  // 检查是否已点赞
+  let count = await dbModel.praiseCount(data.article_id, data.user_id)
+  if (count[0].count > 0) {
+    res.send({ code: 200, msg: '已点赞' })
+    return
+  }
+  await dbModel.addPraise(data).then(() => {
+    res.send({ code: 200 })
+  })
+}

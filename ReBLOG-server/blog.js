@@ -29,8 +29,16 @@ app.all('*', function (req, res, next) {
 //解析前端数据
 app.use(express.json())//解析位 request.body
 
+//引入公开路由（无需 Token）
+require('./routes/public')(app);
+
 //token处理
 app.use(async (req, res, next) => {
+  // 公开路由前缀跳过 Token 校验
+  if (req.path.startsWith('/public')) {
+    next()
+    return
+  }
   if (typeof (req.body.token) != 'undefined') {
     let token = req.body.token;
     let isok = jwt.verifyToken(token);

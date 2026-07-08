@@ -130,6 +130,12 @@ exports.deleteAritcle = (id) => {
   return db.query2(_sql)
 }
 
+//新建评论
+exports.addComment = (value) => {
+  let _sql = "insert into comment set ?;"
+  return db.query2(_sql, value)
+}
+
 //新建文章点赞
 exports.addPraise = (value) => {
   let _sql = "insert into praise set ?;"
