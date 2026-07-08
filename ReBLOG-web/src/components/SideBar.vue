@@ -21,18 +21,18 @@ function isActive(path: string) {
   <aside class="fixed left-4 top-[50%] z-50 hidden lg:block" style="transform:translateY(-50%)">
     <nav class="flex flex-col items-center gap-1 p-2 rounded-3xl glass-heavy">
       <router-link to="/" class="p-2 mb-2">
-        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-accent to-accent-2 flex items-center justify-center shadow-lg shadow-accent/20 transition-all duration-300 hover:shadow-xl hover:shadow-accent/30 hover:scale-105">
-          <User :size="18" class="text-white" />
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-accent to-accent-2 flex items-center justify-center shadow-lg shadow-accent/20 transition-all duration-300 hover:shadow-xl hover:shadow-accent/30 hover:scale-105">
+          <User :size="22" class="text-white" />
         </div>
       </router-link>
 
       <router-link
         v-for="link in navLinks" :key="link.path" :to="link.path"
-        class="relative flex flex-col items-center gap-0.5 p-2.5 rounded-2xl transition-all duration-300 group"
+        class="relative flex flex-col items-center gap-1 p-3 rounded-2xl transition-all duration-300 group"
         :class="isActive(link.path) ? 'text-accent' : 'text-zinc-400 hover:text-zinc-700'"
       >
-        <component :is="link.icon" :size="18" />
-        <span class="text-[10px] font-medium leading-none">{{ link.label }}</span>
+        <component :is="link.icon" :size="22" />
+        <span class="text-xs font-semibold leading-none">{{ link.label }}</span>
         <span v-if="isActive(link.path)" class="absolute inset-0 rounded-2xl bg-accent/8 -z-10" />
       </router-link>
 
@@ -48,11 +48,11 @@ function isActive(path: string) {
     <div class="glass-heavy rounded-2xl mx-auto max-w-sm flex items-center justify-around py-2 px-1">
       <router-link
         v-for="link in navLinks" :key="link.path" :to="link.path"
-        class="flex flex-col items-center gap-0.5 p-2 rounded-xl transition-all duration-300 min-w-[56px]"
+        class="flex flex-col items-center gap-1 p-3 rounded-xl transition-all duration-300 min-w-[60px]"
         :class="isActive(link.path) ? 'text-accent' : 'text-zinc-400'"
       >
-        <component :is="link.icon" :size="18" />
-        <span class="text-[10px] font-medium">{{ link.label }}</span>
+        <component :is="link.icon" :size="22" />
+        <span class="text-xs font-semibold">{{ link.label }}</span>
       </router-link>
     </div>
   </nav>

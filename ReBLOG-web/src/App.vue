@@ -5,7 +5,7 @@ import SideBar from '@/components/SideBar.vue'
 <template>
   <div class="min-h-screen flex flex-col">
     <SideBar />
-    <main class="flex-1 lg:ml-20 pb-20 lg:pb-0">
+    <main class="flex-1 lg:ml-24 pb-20 lg:pb-0">
       <router-view v-slot="{ Component }">
         <transition name="page" mode="out-in">
           <component :is="Component" />

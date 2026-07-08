@@ -52,20 +52,20 @@ onMounted(async () => {
           </span>
         </ScrollReveal>
 
-        <!-- Main heading with typewriter -->
+        <!-- Typewriter -->
         <ScrollReveal :delay="100">
-          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-zinc-800 leading-tight mb-4">
+          <p class="text-2xl sm:text-3xl lg:text-4xl font-display text-zinc-500 h-14 sm:h-16 flex items-center justify-center">
+            <TypewriterText />
+          </p>
+        </ScrollReveal>
+
+        <!-- Main heading -->
+        <ScrollReveal :delay="200">
+          <h1 class="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-extrabold tracking-tight text-zinc-800 leading-tight mt-2">
             <span class="bg-clip-text text-transparent bg-gradient-to-r from-zinc-800 via-zinc-600 to-zinc-800">
               ReBLOG
             </span>
           </h1>
-        </ScrollReveal>
-
-        <!-- Typewriter -->
-        <ScrollReveal :delay="200">
-          <p class="text-xl sm:text-2xl lg:text-3xl font-display text-zinc-500 h-12 sm:h-14 flex items-center justify-center">
-            <TypewriterText />
-          </p>
         </ScrollReveal>
 
         <!-- CTA -->
