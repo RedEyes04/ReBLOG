@@ -1,80 +1,110 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { getArticles, getGallery, getOverview, getSubsets } from '@/api'
-import type { ArticleDate, OverviewData, SubsetData } from '@/types'
+import { getArticles, getGallery, getOverview } from '@/api'
+import type { ArticleDate, OverviewData } from '@/types'
 import ArticleCard from '@/components/ArticleCard.vue'
 import GalleryCard from '@/components/GalleryCard.vue'
+import ScrollReveal from '@/components/ScrollReveal.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
-import { ArrowRight } from 'lucide-vue-next'
+import { ArrowRight, Sparkles } from 'lucide-vue-next'
 import { getList } from '@/utils/helpers'
 
 const featuredArticles = ref<ArticleDate[]>([])
 const featuredGallery = ref<ArticleDate[]>([])
 const overview = ref<OverviewData | null>(null)
-const articleSubsets = ref<SubsetData[]>([])
 const loading = ref(true)
 
 const baseImgPath = 'http://localhost:3000/files'
 
 onMounted(async () => {
   try {
-    const [aRes, gRes, oRes, sRes] = await Promise.all([
+    const [aRes, gRes, oRes] = await Promise.all([
       getArticles({ pageSize: 4, nowPage: 1 }),
       getGallery({ pageSize: 4, nowPage: 1 }),
       getOverview(),
-      getSubsets(0),
     ])
-    if (aRes.code === 200 && aRes.data) featuredArticles.value = getList<ArticleDate>(aRes.data)
-    if (gRes.code === 200 && gRes.data) featuredGallery.value = getList<ArticleDate>(gRes.data)
+    if (aRes.code === 200) featuredArticles.value = getList<ArticleDate>(aRes.data!)
+    if (gRes.code === 200) featuredGallery.value = getList<ArticleDate>(gRes.data!)
     if (oRes.code === 200) overview.value = oRes.data || null
-    if (sRes.code === 200 && sRes.data) articleSubsets.value = getList<SubsetData>(sRes.data)
-  } catch { /* API unavailable — show empty state */ }
+  } catch { /* API unavailable */ }
   loading.value = false
 })
 </script>
 
 <template>
-  <div>
-    <!-- Hero Section -->
-    <section class="pt-14 pb-20 sm:pt-28 sm:pb-32 px-6 text-center">
-      <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-apple-gray-700 text-balance">
-        记录思考，<br class="sm:hidden" />分享生活
-      </h1>
-      <p class="mt-6 text-lg sm:text-xl text-apple-gray-400 max-w-lg mx-auto leading-relaxed">
-        一个关于技术、设计与日常的私人空间
-      </p>
-      <div class="mt-8 flex items-center justify-center gap-4">
-        <router-link
-          to="/blog"
-          class="inline-flex items-center gap-1.5 px-6 py-3 rounded-full bg-apple-gray-700 text-white text-sm font-medium hover:bg-black transition-colors"
-        >
-          浏览博客
-          <ArrowRight :size="16" />
-        </router-link>
-        <router-link
-          to="/gallery"
-          class="inline-flex items-center gap-1.5 px-6 py-3 rounded-full bg-apple-gray-50 text-apple-gray-700 text-sm font-medium hover:bg-apple-gray-100 transition-colors"
-        >
-          查看图库
-        </router-link>
+  <div class="bg-aurora">
+    <!-- Hero -->
+    <section class="relative pt-28 sm:pt-40 pb-20 sm:pb-28 px-6 text-center overflow-hidden">
+      <!-- Animated background blobs -->
+      <div class="absolute inset-0 pointer-events-none overflow-hidden">
+        <div class="absolute -top-40 -left-20 w-[500px] h-[500px] rounded-full bg-apple-blue/5 animate-float" />
+        <div class="absolute top-20 -right-32 w-[400px] h-[400px] rounded-full bg-purple-500/4 animate-float" style="animation-delay: -2s" />
+        <div class="absolute -bottom-20 left-1/3 w-[350px] h-[350px] rounded-full bg-pink-400/3 animate-float" style="animation-delay: -4s" />
       </div>
 
-      <!-- Stats -->
-      <div v-if="overview" class="mt-16 flex items-center justify-center gap-8 sm:gap-12">
-        <div class="text-center">
-          <p class="text-2xl font-bold text-apple-gray-700">{{ overview.article }}</p>
-          <p class="text-xs text-apple-gray-400 mt-0.5">文章</p>
-        </div>
-        <div class="w-px h-8 bg-apple-gray-200" />
-        <div class="text-center">
-          <p class="text-2xl font-bold text-apple-gray-700">{{ overview.gallery }}</p>
-          <p class="text-xs text-apple-gray-400 mt-0.5">图库</p>
-        </div>
-        <div class="w-px h-8 bg-apple-gray-200" />
-        <div class="text-center">
-          <p class="text-2xl font-bold text-apple-gray-700">{{ overview.diary }}</p>
-          <p class="text-xs text-apple-gray-400 mt-0.5">日记</p>
-        </div>
+      <div class="relative">
+        <!-- Badge -->
+        <ScrollReveal>
+          <span class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full glass-dark text-sm font-medium text-apple-gray-500 mb-8">
+            <Sparkles :size="14" class="text-apple-blue" />
+            欢迎来到我的空间
+          </span>
+        </ScrollReveal>
+
+        <!-- Heading -->
+        <ScrollReveal :delay="100">
+          <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-balance leading-tight">
+            <span class="bg-clip-text text-transparent bg-gradient-to-b from-apple-gray-700 to-apple-gray-500">
+              记录思考，<br class="sm:hidden" />分享生活
+            </span>
+          </h1>
+        </ScrollReveal>
+
+        <!-- Subtitle -->
+        <ScrollReveal :delay="200">
+          <p class="mt-6 text-lg sm:text-xl text-apple-gray-400 max-w-lg mx-auto leading-relaxed">
+            一个关于技术、设计与日常的私人空间
+          </p>
+        </ScrollReveal>
+
+        <!-- CTA -->
+        <ScrollReveal :delay="300">
+          <div class="mt-8 flex items-center justify-center gap-4">
+            <router-link
+              to="/blog"
+              class="group inline-flex items-center gap-2 px-6 py-3 rounded-full bg-apple-gray-700 text-white text-sm font-medium hover:bg-black transition-all duration-300 hover:shadow-lg hover:shadow-black/10"
+            >
+              浏览博客
+              <ArrowRight :size="16" class="transition-transform duration-300 group-hover:translate-x-0.5" />
+            </router-link>
+            <router-link
+              to="/gallery"
+              class="inline-flex items-center gap-2 px-6 py-3 rounded-full glass-card text-sm font-medium text-apple-gray-700"
+            >
+              查看图库
+            </router-link>
+          </div>
+        </ScrollReveal>
+
+        <!-- Stats -->
+        <ScrollReveal v-if="overview" :delay="400">
+          <div class="mt-16 flex items-center justify-center gap-10 sm:gap-16">
+            <div class="text-center group cursor-default">
+              <p class="text-3xl font-extrabold text-apple-gray-700 transition-all duration-300 group-hover:text-apple-blue">{{ overview.article }}</p>
+              <p class="text-xs text-apple-gray-400 mt-1">文章</p>
+            </div>
+            <div class="w-px h-10 bg-apple-gray-200" />
+            <div class="text-center group cursor-default">
+              <p class="text-3xl font-extrabold text-apple-gray-700 transition-all duration-300 group-hover:text-apple-blue">{{ overview.gallery }}</p>
+              <p class="text-xs text-apple-gray-400 mt-1">图库</p>
+            </div>
+            <div class="w-px h-10 bg-apple-gray-200" />
+            <div class="text-center group cursor-default">
+              <p class="text-3xl font-extrabold text-apple-gray-700 transition-all duration-300 group-hover:text-apple-blue">{{ overview.diary }}</p>
+              <p class="text-xs text-apple-gray-400 mt-1">日记</p>
+            </div>
+          </div>
+        </ScrollReveal>
       </div>
     </section>
 
@@ -82,58 +112,72 @@ onMounted(async () => {
 
     <template v-else>
       <!-- Featured Articles -->
-      <section v-if="featuredArticles.length" class="px-6 pb-20">
+      <section v-if="featuredArticles.length" class="px-6 pb-20 relative">
         <div class="max-w-4xl mx-auto">
-          <div class="flex items-center justify-between mb-8">
-            <h2 class="text-2xl font-bold text-apple-gray-700">最新文章</h2>
-            <router-link
-              to="/blog"
-              class="text-sm text-apple-blue hover:text-apple-blue-hover transition-colors flex items-center gap-1"
-            >
-              查看全部 <ArrowRight :size="14" />
-            </router-link>
-          </div>
-          <div class="space-y-3">
-            <ArticleCard
-              v-for="a in featuredArticles"
+          <ScrollReveal>
+            <div class="flex items-center justify-between mb-10">
+              <div>
+                <p class="text-xs font-semibold text-apple-blue uppercase tracking-widest">Latest</p>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-apple-gray-700 mt-1">最新文章</h2>
+              </div>
+              <router-link
+                to="/blog"
+                class="group hidden sm:inline-flex items-center gap-1.5 text-sm font-medium text-apple-blue hover:text-apple-blue-hover transition-colors"
+              >
+                查看全部
+                <ArrowRight :size="14" class="transition-transform duration-300 group-hover:translate-x-0.5" />
+              </router-link>
+            </div>
+          </ScrollReveal>
+
+          <div class="space-y-4">
+            <ScrollReveal
+              v-for="(a, i) in featuredArticles"
               :key="a.id"
-              :article="a"
-              :base-img-path="baseImgPath"
-            />
+              :delay="i * 80"
+            >
+              <ArticleCard :article="a" :base-img-path="baseImgPath" />
+            </ScrollReveal>
           </div>
         </div>
       </section>
 
       <!-- Featured Gallery -->
-      <section v-if="featuredGallery.length" class="px-6 pb-20 bg-apple-gray-50 py-16">
+      <section v-if="featuredGallery.length" class="px-6 pb-20 relative">
         <div class="max-w-4xl mx-auto">
-          <div class="flex items-center justify-between mb-8">
-            <h2 class="text-2xl font-bold text-apple-gray-700">精选图库</h2>
-            <router-link
-              to="/gallery"
-              class="text-sm text-apple-blue hover:text-apple-blue-hover transition-colors flex items-center gap-1"
-            >
-              查看全部 <ArrowRight :size="14" />
-            </router-link>
-          </div>
+          <ScrollReveal>
+            <div class="flex items-center justify-between mb-10">
+              <div>
+                <p class="text-xs font-semibold text-apple-blue uppercase tracking-widest">Gallery</p>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-apple-gray-700 mt-1">精选图库</h2>
+              </div>
+              <router-link
+                to="/gallery"
+                class="group hidden sm:inline-flex items-center gap-1.5 text-sm font-medium text-apple-blue hover:text-apple-blue-hover transition-colors"
+              >
+                查看全部
+                <ArrowRight :size="14" class="transition-transform duration-300 group-hover:translate-x-0.5" />
+              </router-link>
+            </div>
+          </ScrollReveal>
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <GalleryCard
-              v-for="g in featuredGallery"
+            <ScrollReveal
+              v-for="(g, i) in featuredGallery"
               :key="g.id"
-              :item="g"
-              :base-img-path="baseImgPath"
-            />
+              :delay="i * 80"
+            >
+              <GalleryCard :item="g" :base-img-path="baseImgPath" />
+            </ScrollReveal>
           </div>
         </div>
       </section>
 
-      <!-- Empty state if no data -->
-      <section
-        v-if="!featuredArticles.length && !featuredGallery.length"
-        class="px-6 pb-20 text-center"
-      >
-        <p class="text-apple-gray-400">还没有内容，请先在管理后台发布文章或图库</p>
-      </section>
+      <!-- Empty -->
+      <ScrollReveal v-if="!featuredArticles.length && !featuredGallery.length">
+        <section class="px-6 pb-20 text-center">
+          <p class="text-apple-gray-300 text-sm">还没有内容，在管理后台发布文章吧</p>
+        </section>
+      </ScrollReveal>
     </template>
   </div>
 </template>

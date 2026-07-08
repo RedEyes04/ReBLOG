@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getArticles, getSubsets, getLabels } from '@/api'
 import type { ArticleDate, SubsetData, LabelData } from '@/types'
@@ -9,7 +9,8 @@ import TagCloud from '@/components/TagCloud.vue'
 import Pagination from '@/components/Pagination.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import EmptyState from '@/components/EmptyState.vue'
-import { Search } from 'lucide-vue-next'
+import ScrollReveal from '@/components/ScrollReveal.vue'
+import { Search, X } from 'lucide-vue-next'
 import { getList } from '@/utils/helpers'
 
 const route = useRoute()
@@ -26,15 +27,13 @@ const pageSize = 8
 const selectedSubset = ref<number | undefined>(-1)
 const selectedLabel = ref<string | undefined>()
 const searchTerm = ref('')
-
 const baseImgPath = 'http://localhost:3000/files'
 
 async function fetchArticles() {
   loading.value = true
   try {
     const res = await getArticles({
-      pageSize,
-      nowPage: currentPage.value,
+      pageSize, nowPage: currentPage.value,
       subsetId: selectedSubset.value,
       label: selectedLabel.value,
       serchTerm: searchTerm.value || undefined,
@@ -53,109 +52,67 @@ onMounted(async () => {
     if (sRes.code === 200 && sRes.data) subsets.value = getList<SubsetData>(sRes.data)
     if (lRes.code === 200) labels.value = lRes.data || []
   } catch { /* ignore */ }
-  // Restore filters from query
-  if (route.query.subset) selectedSubset.value = Number(route.query.subset)
-  if (route.query.label) selectedLabel.value = String(route.query.label)
   if (route.query.q) searchTerm.value = String(route.query.q)
   await fetchArticles()
 })
 
-function onSubsetChange(id: number | undefined) {
-  selectedSubset.value = id
-  selectedLabel.value = undefined
-  currentPage.value = 1
-  fetchArticles()
-}
-
-function onLabelSelect(label: string | undefined) {
-  selectedLabel.value = label
-  selectedSubset.value = undefined
-  currentPage.value = 1
-  fetchArticles()
-}
-
-function onSearch() {
-  currentPage.value = 1
-  router.replace({ query: { q: searchTerm.value || undefined } })
-  fetchArticles()
-}
-
-function clearSearch() {
-  searchTerm.value = ''
-  currentPage.value = 1
-  router.replace({ query: {} })
-  fetchArticles()
-}
-
-function onPageChange(p: number) {
-  currentPage.value = p
-  window.scrollTo({ top: 0, behavior: 'smooth' })
-  fetchArticles()
-}
+function onSubsetChange(id: number | undefined) { selectedSubset.value = id; selectedLabel.value = undefined; currentPage.value = 1; fetchArticles() }
+function onLabelSelect(label: string | undefined) { selectedLabel.value = label; selectedSubset.value = undefined; currentPage.value = 1; fetchArticles() }
+function onSearch() { currentPage.value = 1; fetchArticles() }
+function clearSearch() { searchTerm.value = ''; currentPage.value = 1; fetchArticles() }
+function onPageChange(p: number) { currentPage.value = p; window.scrollTo({ top: 0, behavior: 'smooth' }); fetchArticles() }
 </script>
 
 <template>
-  <div class="pt-20 pb-16">
-    <div class="max-w-4xl mx-auto px-6">
+  <div class="bg-aurora min-h-screen">
+    <div class="pt-20 pb-16 max-w-4xl mx-auto px-6">
       <!-- Header -->
-      <div class="mb-10">
-        <h1 class="text-3xl font-extrabold text-apple-gray-700">博客</h1>
-        <p class="mt-2 text-apple-gray-400">共 {{ totalCount }} 篇文章</p>
-      </div>
+      <ScrollReveal>
+        <div class="mb-10">
+          <p class="text-xs font-semibold text-apple-blue uppercase tracking-widest mb-2">Blog</p>
+          <h1 class="text-3xl sm:text-4xl font-extrabold text-apple-gray-700">博客</h1>
+          <p class="mt-1.5 text-apple-gray-400 text-sm" v-if="totalCount >= 0">共 {{ totalCount }} 篇文章</p>
+        </div>
+      </ScrollReveal>
 
-      <!-- Search -->
-      <div class="relative mb-8">
-        <input
-          v-model="searchTerm"
-          type="text"
-          placeholder="搜索文章..."
-          class="w-full px-4 py-3 pl-11 rounded-2xl border border-apple-gray-200 text-sm focus:outline-none focus:border-apple-blue focus:ring-4 focus:ring-apple-blue/5 transition-all"
-          @keyup.enter="onSearch"
-        />
-        <Search :size="17" class="absolute left-4 top-1/2 -translate-y-1/2 text-apple-gray-300" />
-        <button
-          v-if="searchTerm"
-          @click="clearSearch"
-          class="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-apple-blue hover:text-apple-blue-hover transition-colors"
-        >
-          清除
-        </button>
-      </div>
+      <!-- Search bar -->
+      <ScrollReveal :delay="50">
+        <div class="relative mb-6">
+          <Search :size="16" class="absolute left-4 top-1/2 -translate-y-1/2 text-apple-gray-300" />
+          <input
+            v-model="searchTerm"
+            type="text"
+            placeholder="搜索文章..."
+            class="w-full pl-11 pr-12 py-3 rounded-2xl glass-card text-sm focus:outline-none transition-all duration-300"
+            @keyup.enter="onSearch"
+          />
+          <button
+            v-if="searchTerm"
+            @click="clearSearch"
+            class="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-black/5 transition-colors"
+          >
+            <X :size="14" class="text-apple-gray-400" />
+          </button>
+        </div>
+      </ScrollReveal>
 
       <!-- Filters -->
       <div class="space-y-4 mb-8">
-        <CategoryFilter
-          v-if="subsets.length"
-          :subsets="subsets"
-          :selected="selectedSubset"
-          @select="onSubsetChange"
-        />
-        <TagCloud
-          v-if="labels.length"
-          :labels="labels"
-          :selected="selectedLabel"
-          @select="onLabelSelect"
-        />
+        <CategoryFilter v-if="subsets.length" :subsets="subsets" :selected="selectedSubset" @select="onSubsetChange" />
+        <TagCloud v-if="labels.length" :labels="labels" :selected="selectedLabel" @select="onLabelSelect" />
       </div>
 
-      <!-- Articles -->
+      <!-- Results -->
       <LoadingSpinner v-if="loading" />
       <EmptyState v-else-if="!articles.length" description="暂无文章" />
-      <div v-else class="space-y-3">
-        <ArticleCard
-          v-for="a in articles"
-          :key="a.id"
-          :article="a"
-          :base-img-path="baseImgPath"
-        />
+
+      <div v-else class="space-y-4">
+        <ScrollReveal v-for="(a, i) in articles" :key="a.id" :delay="i * 60">
+          <ArticleCard :article="a" :base-img-path="baseImgPath" />
+        </ScrollReveal>
       </div>
 
-      <Pagination
-        :current="currentPage"
-        :total="totalCount"
-        :page-size="pageSize"
-        @change="onPageChange"
-      />
+      <Pagination :current="currentPage" :total="totalCount" :page-size="pageSize" @change="onPageChange" />
     </div>
   </div>
 </template>

@@ -7,6 +7,7 @@ import CategoryFilter from '@/components/CategoryFilter.vue'
 import Pagination from '@/components/Pagination.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import EmptyState from '@/components/EmptyState.vue'
+import ScrollReveal from '@/components/ScrollReveal.vue'
 import { getList } from '@/utils/helpers'
 
 const items = ref<ArticleDate[]>([])
@@ -16,7 +17,6 @@ const loading = ref(true)
 const currentPage = ref(1)
 const selectedSubset = ref<number | undefined>(-1)
 const pageSize = 12
-
 const baseImgPath = 'http://localhost:3000/files'
 
 async function fetchItems() {
@@ -39,53 +39,33 @@ onMounted(async () => {
   await fetchItems()
 })
 
-function onSubsetChange(id: number | undefined) {
-  selectedSubset.value = id
-  currentPage.value = 1
-  fetchItems()
-}
-
-function onPageChange(p: number) {
-  currentPage.value = p
-  window.scrollTo({ top: 0, behavior: 'smooth' })
-  fetchItems()
-}
+function onSubsetChange(id: number | undefined) { selectedSubset.value = id; currentPage.value = 1; fetchItems() }
+function onPageChange(p: number) { currentPage.value = p; window.scrollTo({ top: 0, behavior: 'smooth' }); fetchItems() }
 </script>
 
 <template>
-  <div class="pt-20 pb-16">
-    <div class="max-w-6xl mx-auto px-6">
-      <!-- Header -->
-      <div class="mb-10">
-        <h1 class="text-3xl font-extrabold text-apple-gray-700">图库</h1>
-        <p class="mt-2 text-apple-gray-400">共 {{ totalCount }} 张</p>
-      </div>
+  <div class="bg-aurora min-h-screen">
+    <div class="pt-20 pb-16 max-w-6xl mx-auto px-6">
+      <ScrollReveal>
+        <div class="mb-10">
+          <p class="text-xs font-semibold text-apple-blue uppercase tracking-widest mb-2">Gallery</p>
+          <h1 class="text-3xl sm:text-4xl font-extrabold text-apple-gray-700">图库</h1>
+          <p class="mt-1.5 text-apple-gray-400 text-sm" v-if="totalCount >= 0">共 {{ totalCount }} 张</p>
+        </div>
+      </ScrollReveal>
 
-      <CategoryFilter
-        v-if="subsets.length"
-        :subsets="subsets"
-        :selected="selectedSubset"
-        @select="onSubsetChange"
-        class="mb-8"
-      />
+      <CategoryFilter v-if="subsets.length" :subsets="subsets" :selected="selectedSubset" @select="onSubsetChange" class="mb-8" />
 
       <LoadingSpinner v-if="loading" />
       <EmptyState v-else-if="!items.length" description="暂无图片" />
-      <div v-else class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-        <GalleryCard
-          v-for="g in items"
-          :key="g.id"
-          :item="g"
-          :base-img-path="baseImgPath"
-        />
+
+      <div v-else class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
+        <ScrollReveal v-for="(g, i) in items" :key="g.id" :delay="i * 40">
+          <GalleryCard :item="g" :base-img-path="baseImgPath" />
+        </ScrollReveal>
       </div>
 
-      <Pagination
-        :current="currentPage"
-        :total="totalCount"
-        :page-size="pageSize"
-        @change="onPageChange"
-      />
+      <Pagination :current="currentPage" :total="totalCount" :page-size="pageSize" @change="onPageChange" />
     </div>
   </div>
 </template>
