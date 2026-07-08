@@ -1,0 +1,42 @@
+body {
+  background-color: @bg-color-m;
+}
+
+#app {
+  padding-top: 64px;
+}
+
+strong,
+strong span {
+  font-weight: bold;
+}
+
+.card {
+  padding: @space-xl;
+  border-radius: @radius-m;
+  background: @bg-color-l;
+  width: 100%;
+
+  &__title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: @space-l;
+
+    &-name {
+      .font-l();
+      font-weight: 600;
+      color: @font-color-l;
+    }
+  }
+}
+
+@ecolor: #ff4d4f;
+
+.highlight {
+  background-color: lighten(@ecolor, 30%);
+  color: @ecolor;
+  font-weight: bold;
+  padding: 0 4px;
+  border-radius: 4px;
+}
